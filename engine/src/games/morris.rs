@@ -220,4 +220,42 @@ mod tests {
         assert_eq!(g.terminal(&s), None);
         assert_eq!(g.successors(&s).len(), 16); // first placement: any of 16 points
     }
+
+    #[test]
+    fn all_opponent_men_in_mills_any_removable() {
+        // Black's only men form a mill (8,9,10). White completes 0-1-2 by placing
+        // at 2 — since every Black man is in a mill, any may be captured.
+        let s = State {
+            white: mask(&[0, 1]),
+            black: mask(&[8, 9, 10]),
+            w_hand: 1,
+            b_hand: 0,
+            turn: WHITE,
+        };
+        let captures: Vec<u16> = SixMensMorris
+            .successors(&s)
+            .into_iter()
+            .filter(|n| n.white == mask(&[0, 1, 2]) && n.black.count_ones() == 2)
+            .map(|n| n.black)
+            .collect();
+        // Three distinct capture results (remove 8, 9, or 10).
+        assert_eq!(captures.len(), 3);
+    }
+
+    #[test]
+    fn capturing_by_sliding_into_a_mill() {
+        // Movement phase. White {1,2,7}; sliding 7->0 completes the 0-1-2 mill.
+        // Black {8,9,10,11}: 8,9,10 are a mill, so only 11 is capturable.
+        let s = State {
+            white: mask(&[1, 2, 7]),
+            black: mask(&[8, 9, 10, 11]),
+            w_hand: 0,
+            b_hand: 0,
+            turn: WHITE,
+        };
+        let slid_and_captured = SixMensMorris.successors(&s).into_iter().any(|n| {
+            n.white == mask(&[0, 1, 2]) && n.black == mask(&[8, 9, 10])
+        });
+        assert!(slid_and_captured, "sliding into a mill should capture the non-mill man");
+    }
 }
