@@ -1,0 +1,9 @@
+[package]
+name = "game-solver"
+version = "0.1.0"
+edition = "2021"
+description = "A generic retrograde-analysis engine for strongly solving small, finite, perfect-information, two-player games."
+license = "CC0-1.0"
+
+[lib]
+name = "game_solver"
