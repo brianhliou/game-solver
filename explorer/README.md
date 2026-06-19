@@ -13,11 +13,13 @@ The WASM package and the tablebase are generated, not committed.
 # 1. Compile the engine bindings to WASM (writes ../wasm/pkg)
 wasm-pack build ../wasm --target web --release
 
-# 2. Generate the tablebase and drop it in public/ under an opaque name
-#    (a .gz name would make servers set Content-Encoding: gzip and fight our
-#    own DecompressionStream).
-cargo run --release --manifest-path ../engine/Cargo.toml --bin morris6_tablebase -- ../engine/artifacts/morris6
-gzip -9 -c ../engine/artifacts/morris6.wld > public/morris6.tb
+# 2. Generate the family tablebases (4/5/6 men's) into public/ under opaque
+#    .tb names (a .gz name would make servers set Content-Encoding: gzip and
+#    fight our own DecompressionStream).
+for m in 4 5 6; do
+  cargo run --release --manifest-path ../engine/Cargo.toml --bin morris_tablebase -- $m ../engine/artifacts/morris$m
+  gzip -9 -c ../engine/artifacts/morris$m.wld > public/morris$m.tb
+done
 
 # 3. Install and run / build
 npm install

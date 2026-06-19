@@ -3,48 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Six Men's Morris — perfect-play explorer</title>
+    <title>Morris — perfect-play tablebase explorer</title>
     <meta
       name="description"
-      content="Play six men's morris against a perfect-play tablebase. Every position and move is labelled win, loss, or draw — the first published strong solution."
+      content="Play the morris family against a perfect-play tablebase. Every position and move is labelled win, loss, or draw — the first published strong solution of six men's morris."
     />
   </head>
   <body>
-    <main id="app">
-      <header>
-        <h1>Six Men's Morris — solved</h1>
-        <p class="sub">
-          A draw with perfect play, strongly solved over all 42,372,745 reachable
-          positions. Every move below is labelled by its game-theoretic value.
-        </p>
-      </header>
+    <header class="site-header">
+      <h1 id="title">Six Men's Morris</h1>
+      <span class="tagline">perfect-play tablebase explorer</span>
+      <nav class="hlinks">
+        <span class="sizes" id="sizes"></span>
+        <a href="https://github.com/brianhliou/awesome-game-solving">repo</a>
+        <a href="https://github.com/brianhliou/awesome-game-solving/tree/main/engine">engine</a>
+      </nav>
+    </header>
 
-      <div class="layout">
+    <div class="main">
+      <div class="left">
         <div class="board-wrap">
           <svg id="board" viewBox="-0.6 -0.6 7.2 7.2" aria-label="morris board"></svg>
         </div>
-
-        <aside class="panel">
-          <div id="eval" class="eval">Loading tablebase…</div>
-          <div class="controls">
-            <button id="undo" disabled>Undo</button>
-            <button id="reset">Reset</button>
-            <label class="toggle"><input type="checkbox" id="hints" checked /> Show move values</label>
-          </div>
-          <div class="legend">
-            <span class="chip win">winning</span>
-            <span class="chip draw">drawing</span>
-            <span class="chip loss">losing</span>
-          </div>
-          <p id="hint" class="hint"></p>
-          <p class="credit">
-            Solved by the open-source
-            <a href="https://github.com/brianhliou/awesome-game-solving/tree/main/engine">game-solver</a>
-            engine. No flying; standard six men's rules.
-          </p>
-        </aside>
       </div>
-    </main>
+
+      <aside class="panel">
+        <div id="verdict" class="verdict draw">Loading tablebase…</div>
+        <div class="controls">
+          <button id="undo" disabled>← Undo</button>
+          <button id="reset">Reset</button>
+          <span class="counts" id="counts"></span>
+        </div>
+        <div class="secthdr">Moves played</div>
+        <div id="line" class="line"><span class="lempty">No moves yet.</span></div>
+        <div class="secthdr">Best moves <span class="sub-note">perfect play</span></div>
+        <div id="moves" class="moves"></div>
+        <div class="legend">
+          <span><i class="win"></i> winning</span>
+          <span><i class="draw"></i> drawing</span>
+          <span><i class="loss"></i> losing</span>
+        </div>
+        <p class="credit">
+          Strongly solved by the open-source
+          <a href="https://github.com/brianhliou/awesome-game-solving/tree/main/engine">game-solver</a>
+          engine. Standard rules, no flying.
+        </p>
+      </aside>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

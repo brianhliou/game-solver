@@ -32,11 +32,25 @@ export interface Move {
 }
 
 let explorer: Explorer | null = null;
+let initialized = false;
+const tbCache = new Map<number, Uint8Array>();
 
-export async function loadEngine(rings: number, men: number, tablebaseUrl: string): Promise<void> {
-  await init({ module_or_path: wasmUrl });
-  explorer = new Explorer(rings, men);
-  const bytes = await fetchGunzip(tablebaseUrl);
+/** Switch to `men`-men's morris (two-ring board), loading its tablebase (cached). */
+export async function selectGame(men: number, tablebaseUrl: string): Promise<void> {
+  if (!initialized) {
+    await init({ module_or_path: wasmUrl });
+    initialized = true;
+  }
+  if (explorer) {
+    explorer.free();
+    explorer = null;
+  }
+  explorer = new Explorer(2, men);
+  let bytes = tbCache.get(men);
+  if (!bytes) {
+    bytes = await fetchGunzip(tablebaseUrl);
+    tbCache.set(men, bytes);
+  }
   explorer.set_tablebase(bytes);
 }
 
