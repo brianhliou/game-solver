@@ -51,22 +51,21 @@ body {
 #board { display: block; width: min(70vh, 600px); height: auto; touch-action: none; }
 
 .edge { stroke: var(--line); stroke-width: 0.05; stroke-linecap: round; }
-.node { fill: #e7ddc6; }
 .stone { stroke: #1c1813; stroke-width: 0.03; }
 .stone.white { fill: #fbf8f1; }
 .stone.black { fill: #2a2520; }
 .clickable { cursor: pointer; }
-.aff { fill: none; stroke-width: 0.06; opacity: 0.9; }
-.aff.win { stroke: var(--win); }
-.aff.draw { stroke: var(--draw); }
-.aff.loss { stroke: var(--loss); }
-.aff.unknown { stroke: #b9b2a3; }
-.aff.neutral { stroke: #7c98c0; }
-.aff.selected { stroke: var(--accent); stroke-width: 0.08; stroke-dasharray: 0.12 0.1; }
-.aff.capture { stroke: var(--loss); stroke-width: 0.09; }
-.aff.hot { stroke-width: 0.1; opacity: 1; }
-.pt:hover .aff { opacity: 1; }
-.lbl { fill: #5e5544; font-size: 0.4px; font-weight: 600; font-family: ui-monospace, Menlo, monospace; pointer-events: none; }
+/* one circle per point; stroke colour encodes the move value / state */
+.node { fill: #f1ead8; stroke: #c7bb9d; stroke-width: 0.022; }
+.node.win { stroke: var(--win); stroke-width: 0.06; }
+.node.draw { stroke: var(--draw); stroke-width: 0.055; }
+.node.loss { stroke: var(--loss); stroke-width: 0.06; }
+.node.unknown { stroke: #b9b2a3; stroke-width: 0.05; }
+.node.neutral { stroke: #7c98c0; stroke-width: 0.06; }
+.node.selected { stroke: var(--accent); stroke-width: 0.07; stroke-dasharray: 0.1 0.08; }
+.node.capture { stroke: var(--loss); stroke-width: 0.08; }
+.node.hot { stroke-width: 0.09; }
+.lbl { fill: #574e3e; font-size: 0.46px; font-weight: 700; font-family: ui-monospace, Menlo, monospace; pointer-events: none; }
 
 /* right panel */
 .panel {

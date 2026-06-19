@@ -112,30 +112,37 @@ function renderBoard() {
     if (hotMove.captured !== null) hot.add(hotMove.captured);
   }
   while (svg.firstChild) svg.removeChild(svg.firstChild);
+  const R = 0.32; // node radius; lines stop here so they never run into the circles
   for (const [a1, b1] of layout.edges) {
-    const [x1, y1] = layout.points[a1];
-    const [x2, y2] = layout.points[b1];
-    svg.appendChild(el("line", { x1, y1, x2, y2, class: "edge" }));
+    const [ax, ay] = layout.points[a1];
+    const [bx, by] = layout.points[b1];
+    const dx = bx - ax, dy = by - ay, len = Math.hypot(dx, dy);
+    const ux = dx / len, uy = dy / len;
+    svg.appendChild(el("line", { x1: ax + ux * R, y1: ay + uy * R, x2: bx - ux * R, y2: by - uy * R, class: "edge" }));
   }
   for (let p = 0; p < layout.points.length; p++) {
     const [x, y] = layout.points[p];
     const g = el("g", { class: "pt", "data-p": p });
     const occ = occupant(current(), p);
-    // a light node disc masks the crossing lines and carries the point letter
-    g.appendChild(el("circle", { cx: x, cy: y, r: 0.19, class: "node" }));
-    if (!occ) {
+    const af = aff.get(p);
+    // a single node circle per point; its stroke carries the move value / state
+    let cls = "node";
+    if (af) {
+      if (af.role === "selected") cls += " selected";
+      else if (af.role === "capture") cls += " capture";
+      else cls += " " + valClass(af.value);
+    } else if (hot.has(p)) {
+      cls += hotMove!.captured === p ? " capture" : " neutral";
+    }
+    if (hot.has(p)) cls += " hot";
+    g.appendChild(el("circle", { cx: x, cy: y, r: R, class: cls }));
+    if (occ) {
+      g.appendChild(el("circle", { cx: x, cy: y, r: 0.28, class: occ === WHITE ? "stone white" : "stone black" }));
+    } else {
       const t = el("text", { x, y, class: "lbl", "text-anchor": "middle", "dominant-baseline": "central" });
       t.textContent = POINT_LABELS[p];
       g.appendChild(t);
     }
-    const af = aff.get(p);
-    if (af) {
-      const cls = `aff ${af.role} ${valClass(af.value)}${hot.has(p) ? " hot" : ""}`;
-      g.appendChild(el("circle", { cx: x, cy: y, r: 0.4, class: cls }));
-    } else if (hot.has(p)) {
-      g.appendChild(el("circle", { cx: x, cy: y, r: 0.4, class: `aff ${hotMove!.captured === p ? "capture" : "neutral"} hot` }));
-    }
-    if (occ) g.appendChild(el("circle", { cx: x, cy: y, r: 0.33, class: occ === WHITE ? "stone white" : "stone black" }));
     if (af) {
       g.addEventListener("click", () => onClickPoint(p));
       g.classList.add("clickable");
