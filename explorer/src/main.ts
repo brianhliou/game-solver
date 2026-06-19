@@ -120,10 +120,11 @@ function renderBoard() {
   for (let p = 0; p < layout.points.length; p++) {
     const [x, y] = layout.points[p];
     const g = el("g", { class: "pt", "data-p": p });
-    g.appendChild(el("circle", { cx: x, cy: y, r: 0.09, class: "node" }));
     const occ = occupant(current(), p);
+    // a light node disc masks the crossing lines and carries the point letter
+    g.appendChild(el("circle", { cx: x, cy: y, r: 0.19, class: "node" }));
     if (!occ) {
-      const t = el("text", { x, y: y + 0.09, class: "lbl", "text-anchor": "middle" });
+      const t = el("text", { x, y, class: "lbl", "text-anchor": "middle", "dominant-baseline": "central" });
       t.textContent = POINT_LABELS[p];
       g.appendChild(t);
     }

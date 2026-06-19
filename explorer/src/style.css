@@ -46,12 +46,12 @@ body {
 
 /* main: board left, panel right */
 .main { flex: 1 1 auto; min-height: 0; display: flex; gap: 24px; align-items: stretch; justify-content: center; }
-.left { flex: 1 1 auto; min-width: 0; display: flex; justify-content: center; align-items: center; }
+.left { flex: 0 1 auto; min-width: 0; display: flex; justify-content: center; align-items: center; }
 .board-wrap { background: var(--board); border-radius: 14px; padding: 1.4rem; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
 #board { display: block; width: min(70vh, 600px); height: auto; touch-action: none; }
 
 .edge { stroke: var(--line); stroke-width: 0.05; stroke-linecap: round; }
-.node { fill: var(--line); }
+.node { fill: #e7ddc6; }
 .stone { stroke: #1c1813; stroke-width: 0.03; }
 .stone.white { fill: #fbf8f1; }
 .stone.black { fill: #2a2520; }
@@ -66,7 +66,7 @@ body {
 .aff.capture { stroke: var(--loss); stroke-width: 0.09; }
 .aff.hot { stroke-width: 0.1; opacity: 1; }
 .pt:hover .aff { opacity: 1; }
-.lbl { fill: #b3a98f; font-size: 0.26px; font-family: ui-monospace, Menlo, monospace; pointer-events: none; }
+.lbl { fill: #5e5544; font-size: 0.4px; font-weight: 600; font-family: ui-monospace, Menlo, monospace; pointer-events: none; }
 
 /* right panel */
 .panel {
