@@ -14,14 +14,24 @@ use game_solver::{solve_reachable, Game, Outcome, RulesGame};
 use std::io::Write;
 
 fn main() {
-    let mut args = std::env::args().skip(1);
-    let men: u8 = args.next().and_then(|s| s.parse().ok()).unwrap_or(6);
-    let out = args.next().unwrap_or_else(|| format!("artifacts/morris{men}"));
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    let men: u8 = args.first().and_then(|s| s.parse().ok()).unwrap_or(6);
+    let fly = args.iter().any(|s| s == "fly" || s == "flying");
+    let suffix = if fly { "-flying" } else { "" };
+    let ruleset = if fly { "flying" } else { "no-flying" };
+    let out = args
+        .iter()
+        .skip(1)
+        .find(|s| *s != "fly" && *s != "flying")
+        .cloned()
+        .unwrap_or_else(|| format!("artifacts/morris{men}{suffix}"));
 
-    let g = GenericMorris::new(Board::rings(2, men));
+    let board = Board::rings(2, men);
+    let board = if fly { board.with_flying() } else { board };
+    let g = GenericMorris::new(board);
     let total = Game::num_states(&g);
 
-    eprintln!("solving {men} men's morris (solve_reachable)…");
+    eprintln!("solving {men} men's morris ({ruleset}, solve_reachable)…");
     let sol = solve_reachable(&g);
     let (win, loss, draw) = (
         sol.count(Outcome::Win),
@@ -50,7 +60,7 @@ fn main() {
     }
     std::fs::File::create(&wld_path).unwrap().write_all(&packed).unwrap();
     let meta = format!(
-        "{{\n  \"game\": \"{men}-mens-morris\",\n  \"board\": \"two-ring-16pt-no-flying\",\n  \"men\": {men},\n  \"encoding\": \"2bit-le; 0=unreachable 1=win 2=loss 3=draw; addressed by dense index\",\n  \"num_states\": {total},\n  \"reachable\": {},\n  \"win\": {win},\n  \"loss\": {loss},\n  \"draw\": {draw},\n  \"start_value\": \"{start_val:?}\",\n  \"bytes\": {}\n}}\n",
+        "{{\n  \"game\": \"{men}-mens-morris{suffix}\",\n  \"board\": \"two-ring-16pt-{ruleset}\",\n  \"men\": {men},\n  \"flying\": {fly},\n  \"encoding\": \"2bit-le; 0=unreachable 1=win 2=loss 3=draw; addressed by dense index\",\n  \"num_states\": {total},\n  \"reachable\": {},\n  \"win\": {win},\n  \"loss\": {loss},\n  \"draw\": {draw},\n  \"start_value\": \"{start_val:?}\",\n  \"bytes\": {}\n}}\n",
         sol.len(),
         packed.len()
     );

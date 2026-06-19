@@ -30,6 +30,7 @@ pub struct Board {
     pub adj: Vec<u32>,      // adjacency bitmask per point
     pub mills: Vec<u32>,    // each mill as a 3-bit mask
     pub sym: Vec<Vec<u8>>,  // symmetry group: point permutations (length n each)
+    pub flying: bool,       // a side reduced to 3 men may move to any empty point
 }
 
 impl Board {
@@ -76,7 +77,7 @@ impl Board {
         }
 
         let sym = build_symmetry(rings, n, &adj, &mills);
-        Board { n, men, adj, mills, sym }
+        Board { n, men, adj, mills, sym, flying: false }
     }
 
     pub fn six_mens() -> Board {
@@ -85,6 +86,13 @@ impl Board {
 
     pub fn nine_mens() -> Board {
         Board::rings(3, 9)
+    }
+
+    /// Enable the flying rule: a side reduced to exactly three men may move a man
+    /// to any empty point instead of only an adjacent one.
+    pub fn with_flying(mut self) -> Board {
+        self.flying = true;
+        self
     }
 }
 
@@ -343,12 +351,15 @@ impl RulesGame for GenericMorris {
                 }
             }
         } else {
+            // Movement: slide to an adjacent empty point. Under the flying rule, a
+            // side reduced to exactly three men may move to ANY empty point.
+            let fly = self.board.flying && stm.count_ones() == 3;
+            let empties = !occ & ((1u32 << n) - 1);
             let mut m = stm;
             while m != 0 {
                 let f = m.trailing_zeros() as usize;
                 m &= m - 1;
-                let adj = self.board.adj[f];
-                let mut t_mask = adj & !occ;
+                let mut t_mask = if fly { empties } else { self.board.adj[f] & !occ };
                 while t_mask != 0 {
                     let t = t_mask.trailing_zeros() as usize;
                     t_mask &= t_mask - 1;
@@ -377,10 +388,18 @@ impl RulesGame for GenericMorris {
     fn terminal(&self, s: &State) -> Option<Outcome> {
         if s.w_hand == 0 && s.b_hand == 0 {
             let stm = if s.turn == WHITE { s.white } else { s.black };
-            if stm.count_ones() < 3 {
+            let cnt = stm.count_ones();
+            if cnt < 3 {
                 return Some(Outcome::Loss);
             }
-            if !self.has_slide(stm, s.white | s.black) {
+            let occ = s.white | s.black;
+            // A flying side (exactly 3 men) can always move while an empty point exists.
+            let can_move = if self.board.flying && cnt == 3 {
+                occ != (1u32 << self.board.n) - 1
+            } else {
+                self.has_slide(stm, occ)
+            };
+            if !can_move {
                 return Some(Outcome::Loss);
             }
         }
@@ -496,5 +515,17 @@ mod tests {
             let img = State { white: permute(perm, s.white), black: permute(perm, s.black), ..s };
             assert_eq!(g.canon(&img), c, "orbit member canonicalised differently");
         }
+    }
+
+    #[test]
+    fn flying_lets_three_men_jump() {
+        let m = |pts: &[usize]| pts.iter().fold(0u32, |a, &p| a | (1 << p));
+        // White has exactly three men in the movement phase; point 12 is empty and
+        // not adjacent to White's man at 0.
+        let s = State { white: m(&[0, 2, 4]), black: m(&[8, 9, 10, 11]), w_hand: 0, b_hand: 0, turn: WHITE };
+        let fly = GenericMorris::new(Board::rings(2, 6).with_flying());
+        let no_fly = GenericMorris::new(Board::rings(2, 6));
+        assert!(RulesGame::successors(&fly, &s).iter().any(|n| (n.white >> 12) & 1 == 1), "flying should allow the jump");
+        assert!(!RulesGame::successors(&no_fly, &s).iter().any(|n| (n.white >> 12) & 1 == 1), "no-fly should not allow it");
     }
 }
