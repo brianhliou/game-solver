@@ -5,8 +5,10 @@ pub mod generic_morris;
 pub mod morris;
 pub mod three_mens_morris;
 pub mod tic_tac_toe;
+pub mod y;
 
 pub use generic_morris::{Board, GenericMorris};
 pub use morris::SixMensMorris;
 pub use three_mens_morris::ThreeMensMorris;
 pub use tic_tac_toe::TicTacToe;
+pub use y::Y;
