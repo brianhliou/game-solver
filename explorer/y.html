@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Y — perfect-play explorer</title>
+    <meta
+      name="description"
+      content="Play the connection game Y against a perfect-play solver. Every move is coloured by its value under perfect play — the first published, verified strong solution of Y, through side 6."
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <h1 id="title">Y</h1>
+      <span class="tagline">perfect-play explorer · connect all three sides</span>
+      <span class="sizes" id="sizes"></span>
+      <nav class="hlinks">
+        <a href="https://github.com/brianhliou/solved-games">repo</a>
+        <a href="https://github.com/brianhliou/solved-games/tree/main/engine">engine</a>
+      </nav>
+    </header>
+
+    <div class="main">
+      <div class="left">
+        <div class="board-wrap">
+          <svg id="board" viewBox="-3 -1 6 5" aria-label="Y board"></svg>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div id="verdict" class="verdict">Solving…</div>
+        <div class="controls">
+          <button id="undo" disabled>← Undo</button>
+          <button id="reset">Reset</button>
+          <span class="counts" id="counts"></span>
+        </div>
+        <div class="secthdr">Moves played</div>
+        <div id="line" class="line"><span class="lempty">No moves yet.</span></div>
+        <div class="secthdr">Best moves <span>perfect play</span></div>
+        <div id="moves" class="moves"></div>
+        <div class="legend">
+          <span><i class="win"></i> winning</span>
+          <span><i class="loss"></i> losing</span>
+        </div>
+        <p class="credit">
+          Strongly solved (sides 1–6) by the open-source
+          <a href="https://github.com/brianhliou/solved-games/tree/main/engine">game-solver</a>
+          engine — the first documented, verified strong solution of Y, building on
+          prior solver code from
+          <a href="https://github.com/GamesCrafters/GamesmanClassic">GamesCrafters</a>.
+          The board solves in your browser; Y can never draw.
+        </p>
+      </aside>
+    </div>
+    <script type="module" src="/src/y-main.ts"></script>
+  </body>
+</html>
