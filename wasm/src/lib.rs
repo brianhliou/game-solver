@@ -8,7 +8,9 @@
 //! b_hand, turn]`, move lists are flat `u32` groups of 6 (`position…, value`),
 //! and values are `0=win 1=loss 2=draw 3=unknown` from the relevant side.
 
+use game_solver::dense_solve::{solve_dense, DenseSolution};
 use game_solver::games::generic_morris::{Board, GenericMorris, State};
+use game_solver::games::y::{Pos as YPos, Y};
 use game_solver::{Game, Outcome, RulesGame};
 use wasm_bindgen::prelude::*;
 
@@ -120,5 +122,87 @@ fn invert(v: u32) -> u32 {
         0 => 1,
         1 => 0,
         other => other,
+    }
+}
+
+/// One Y board (the Schensted-Titus connection game), solved on construction.
+///
+/// Y at side <= 5 is small enough (side-5 = 3.34M positions) to solve in the
+/// browser on load — so, unlike the morris explorer, no precomputed tablebase is
+/// shipped: the constructor runs the validated dense solver and the result is
+/// probed directly. The wire format is `[p1, p2]` for a position (two stone
+/// bitmasks; the side to move is derived from the counts) and groups of 3
+/// (`p1, p2, value`) for moves, value `0=win 1=loss 2=draw 3=unknown` for the mover.
+#[wasm_bindgen]
+pub struct YExplorer {
+    game: Y,
+    sol: DenseSolution,
+}
+
+#[wasm_bindgen]
+impl YExplorer {
+    /// Build the side-`n` board and strongly solve it (dense solver). Keep `n <= 5`
+    /// for an interactive load; larger sides are far too big to solve in-browser.
+    #[wasm_bindgen(constructor)]
+    pub fn new(side: usize) -> YExplorer {
+        let game = Y::new(side);
+        let sol = solve_dense(&game, |_, _| {});
+        YExplorer { game, sol }
+    }
+
+    pub fn side(&self) -> usize {
+        self.game.n
+    }
+
+    pub fn cells(&self) -> usize {
+        self.game.cells
+    }
+
+    /// The starting position `[p1, p2]` (empty board).
+    pub fn start(&self) -> Vec<u32> {
+        let s = RulesGame::start(&self.game);
+        vec![s.p1 as u32, s.p2 as u32]
+    }
+
+    /// Perfect-play value for the side to move: 0 win, 1 loss, 2 draw, 3 unknown.
+    pub fn value(&self, p1: u32, p2: u32) -> u32 {
+        self.val(p1, p2)
+    }
+
+    /// `Some` terminal value (0/1/2) for the side to move, or 3 if not terminal.
+    pub fn terminal(&self, p1: u32, p2: u32) -> u32 {
+        let s = YPos { p1: p1 as u64, p2: p2 as u64 };
+        match RulesGame::terminal(&self.game, &s) {
+            Some(Outcome::Win) => 0,
+            Some(Outcome::Loss) => 1,
+            Some(Outcome::Draw) => 2,
+            None => 3,
+        }
+    }
+
+    /// Legal moves as flat `u32` groups of 3: `[p1, p2, value]`, where `value` is
+    /// the move's worth *to the mover* (0 win, 1 loss, 2 draw, 3 unknown).
+    pub fn legal_moves(&self, p1: u32, p2: u32) -> Vec<u32> {
+        let s = YPos { p1: p1 as u64, p2: p2 as u64 };
+        let mut out = Vec::new();
+        for ns in RulesGame::successors(&self.game, &s) {
+            // After the move the opponent is to move, so invert to score the mover.
+            let mover_val = invert(self.val(ns.p1 as u32, ns.p2 as u32));
+            out.push(ns.p1 as u32);
+            out.push(ns.p2 as u32);
+            out.push(mover_val);
+        }
+        out
+    }
+}
+
+impl YExplorer {
+    fn val(&self, p1: u32, p2: u32) -> u32 {
+        let s = YPos { p1: p1 as u64, p2: p2 as u64 };
+        match self.sol.value_at(Game::index(&self.game, &s)) {
+            Outcome::Win => 0,
+            Outcome::Loss => 1,
+            Outcome::Draw => 2,
+        }
     }
 }
