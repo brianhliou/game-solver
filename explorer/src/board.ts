@@ -15,8 +15,9 @@ export const SIX_MENS: BoardLayout = {
   points: [
     // outer ring 0..7
     [0, 0], [3, 0], [6, 0], [6, 3], [6, 6], [3, 6], [0, 6], [0, 3],
-    // inner ring 8..15
-    [2, 2], [3, 2], [4, 2], [4, 3], [4, 4], [3, 4], [2, 4], [2, 3],
+    // inner ring 8..15 — drawn wider than the traditional 1/3 board ratio so
+    // the inner points don't crowd (matches the blog post's board diagrams)
+    [1.4, 1.4], [3, 1.4], [4.6, 1.4], [4.6, 3], [4.6, 4.6], [3, 4.6], [1.4, 4.6], [1.4, 3],
   ],
   edges: [
     // outer square
