@@ -1,0 +1,17 @@
+{
+  "name": "game-solver-wasm",
+  "type": "module",
+  "description": "WASM bindings exposing the game-solver engine to the morris explorer.",
+  "version": "0.1.0",
+  "license": "CC0-1.0",
+  "files": [
+    "game_solver_wasm_bg.wasm",
+    "game_solver_wasm.js",
+    "game_solver_wasm.d.ts"
+  ],
+  "main": "game_solver_wasm.js",
+  "types": "game_solver_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

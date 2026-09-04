@@ -8,9 +8,6 @@ dist/
 # Rust build output
 target/
 
-# WASM build output — regenerate with `wasm-pack build --target web`
-wasm/pkg/
-
 # Full-precision tablebase solves — shipped as release assets, never committed.
 # The smaller .tb files the explorer serves ARE committed, under explorer/public.
 artifacts/
