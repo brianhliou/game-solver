@@ -20,7 +20,7 @@ The engine enumerates a game's reachable positions, works backward from the term
 
 Six men's morris is absent from the academic work (Gasser 1993; Gévay and Danner 2014) and from the open-source solvers [Malom](https://github.com/ggevay/malom) and [Sanmill](https://github.com/calcitem/Sanmill), which cover nine, twelve and Lasker morris plus Morabaraba but not six. The tablebases are published so the result can be checked rather than believed.
 
-**Tablebases: [tablebase-v1 release](https://github.com/brianhliou/solved-games/releases/tag/tablebase-v1)** — `.wld` files with a `.meta.json` each giving the encoding and the win/loss/draw breakdown.
+**Tablebases: [tablebase-v1 release](https://github.com/brianhliou/game-solver/releases/tag/tablebase-v1)** — `.wld` files with a `.meta.json` each giving the encoding and the win/loss/draw breakdown.
 
 Write-up: [Six Men's Morris Is a Draw](https://brianhliou.com/posts/six-mens-morris/).
 
