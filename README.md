@@ -4,7 +4,7 @@ A retrograde-analysis engine for small combinatorial games, the WASM build of it
 
 The engine enumerates a game's reachable positions, works backward from the terminal ones, and propagates win/loss/draw until every position has an exact value. Cyclic games (where positions repeat) are handled by a reachable-graph solver rather than plain backward induction, which is what makes the morris family tractable.
 
-**▶ [Open the explorer](https://brianhliou.github.io/solved-games/explorer/)**
+**▶ [Open the explorer](https://tablebase.brianhliou.com/)**
 
 ## Results
 
