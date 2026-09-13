@@ -3,7 +3,7 @@
   "type": "module",
   "description": "WASM bindings exposing the game-solver engine to the morris explorer.",
   "version": "0.1.0",
-  "license": "CC0-1.0",
+  "license": "MIT",
   "files": [
     "game_solver_wasm_bg.wasm",
     "game_solver_wasm.js",

@@ -3,7 +3,7 @@ name = "game-solver-wasm"
 version = "0.1.0"
 edition = "2021"
 description = "WASM bindings exposing the game-solver engine to the morris explorer."
-license = "CC0-1.0"
+license = "MIT"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

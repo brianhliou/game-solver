@@ -55,4 +55,4 @@ This engine began inside [solved-games](https://github.com/brianhliou/solved-gam
 
 ## Licence
 
-See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
