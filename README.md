@@ -10,7 +10,7 @@ The engine enumerates a game's reachable positions, works backward from the term
 
 | Game | Result under perfect play | Positions | Notes |
 |---|---|---:|---|
-| Six men's morris | **Draw** | 42,372,745 | First published solution |
+| Six men's morris | **Draw** | 42,372,745 | No earlier published solution found (searched 2026-10-17) |
 | Six men's morris (flying) | **Draw** | 42,383,945 | |
 | Five men's morris | Draw | 17,844,721 | |
 | Four men's morris | Draw | 4,111,151 | |
@@ -18,7 +18,7 @@ The engine enumerates a game's reachable positions, works backward from the term
 | Y (side 6) | First player wins | — | Solved slice-by-slice to fit in memory |
 | Tic-tac-toe | Draw | — | Validation target |
 
-Six men's morris is absent from the academic work (Gasser 1993; Gévay and Danner 2014) and from the open-source solvers [Malom](https://github.com/ggevay/malom) and [Sanmill](https://github.com/calcitem/Sanmill), which cover nine, twelve and Lasker morris plus Morabaraba but not six. The tablebases are published so the result can be checked rather than believed.
+No published solution of six men's morris was found in the academic work (Gasser 1993; Gévay and Danner 2014), in the open-source solvers [Malom](https://github.com/ggevay/malom) and [Sanmill](https://github.com/calcitem/Sanmill), which cover nine, twelve and Lasker morris plus Morabaraba but not six, or in a web search on 2026-10-17. Unpublished and non-English work was not searched. The tablebases are published so the result can be checked rather than believed.
 
 **Tablebases: [tablebase-v1 release](https://github.com/brianhliou/game-solver/releases/tag/tablebase-v1)** — `.wld` files with a `.meta.json` each giving the encoding and the win/loss/draw breakdown.
 
